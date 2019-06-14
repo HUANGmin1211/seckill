@@ -2,6 +2,7 @@ package com.hm.seckill.controller;
 
 import com.hm.seckill.domain.User;
 import com.hm.seckill.redis.RedisService;
+import com.hm.seckill.redis.UserKey;
 import com.hm.seckill.result.CodeMsg;
 import com.hm.seckill.result.Result;
 import com.hm.seckill.service.UserService;
@@ -58,6 +59,22 @@ public class DemoController {
     @ResponseBody
     public Result<Boolean> DBtx(){
         userService.tx();
+        return Result.success(true);
+    }
+
+    @RequestMapping("/redis/get")
+    @ResponseBody
+    public Result<User> redisGet(){
+        User user = redisService.get(UserKey.getById, ""+1, User.class); // key = UserKey:id1
+        return Result.success(user);
+    }
+
+    @RequestMapping("/redis/set")
+    @ResponseBody
+    public Result<Boolean> redisSet(){
+        User user = new User(1,"1111");
+
+        boolean ret = redisService.set(UserKey.getById, ""+1, user);
         return Result.success(true);
     }
 
