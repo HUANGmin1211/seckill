@@ -1,14 +1,24 @@
 package com.hm.seckill.controller;
 
+import com.hm.seckill.domain.User;
+import com.hm.seckill.redis.RedisService;
 import com.hm.seckill.result.CodeMsg;
 import com.hm.seckill.result.Result;
+import com.hm.seckill.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequestMapping("/demo")
 public class DemoController {
+
+    @Autowired
+    UserService userService;
+    @Autowired
+    RedisService redisService;
 
     @RequestMapping("/")
     @ResponseBody
@@ -36,4 +46,22 @@ public class DemoController {
         model.addAttribute("name", "hm");
         return "hello";
     }
+
+    @RequestMapping("/db/get")
+    @ResponseBody
+    public Result<User> DBGet(){
+        User user = userService.getById(1);
+        return Result.success(user);
+    }
+
+    @RequestMapping("/db/tx")   // 事务测试 @Transactional
+    @ResponseBody
+    public Result<Boolean> DBtx(){
+        userService.tx();
+        return Result.success(true);
+    }
+
+
+
+
 }
