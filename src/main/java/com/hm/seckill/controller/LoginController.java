@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Controller
@@ -32,7 +33,7 @@ public class LoginController {
 
     @RequestMapping("/do_login")
     @ResponseBody
-    public Result<Boolean> doLogin(@Valid LoginVo loginVo){  // @Valid 参数校验
+    public Result<Boolean> doLogin(HttpServletResponse response, @Valid LoginVo loginVo){  // @Valid 参数校验
         log.info(loginVo.toString());
 
         /**
@@ -50,7 +51,7 @@ public class LoginController {
 
 
         // 登陆
-        userService.login(loginVo);
+        userService.login(response, loginVo);
         return Result.success(true);
         /* userService经过改造，出现异常就直接抛出了，无需返回condeMsg
         if (codeMsg.getCode() == 0)
