@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping("/login")
 public class LoginController {
@@ -30,10 +32,11 @@ public class LoginController {
 
     @RequestMapping("/do_login")
     @ResponseBody
-    public Result<Boolean> doLogin(LoginVo loginVo){
+    public Result<Boolean> doLogin(@Valid LoginVo loginVo){  // @Valid 参数校验
         log.info(loginVo.toString());
 
-        // 参数校验
+        /**
+        // 参数校验,引入校验器，在参数初始化的地方通过注解进行校验，而不需要在每个用到的地方再用一大段代码进行校验
         String passInput = loginVo.getPassword();
         String mobile = loginVo.getMobile();
 
@@ -43,6 +46,8 @@ public class LoginController {
             return Result.error(CodeMsg.MOBILE_EMPTY);
         if (!ValidatorUtil.isMobile(mobile))
             return Result.error(CodeMsg.MOBILE_ERROR);
+        */
+
 
         // 登陆
         CodeMsg codeMsg = userService.login(loginVo);

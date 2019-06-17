@@ -1,7 +1,18 @@
 package com.hm.seckill.vo;
 
+import com.hm.seckill.validator.IsMobile;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
+
 public class LoginVo {
+
+    @NotNull
+    @IsMobile // 自定义校验器
     private String mobile;
+
+    @NotNull
+    @Length(min = 32)
     private String password;
 
     @Override
