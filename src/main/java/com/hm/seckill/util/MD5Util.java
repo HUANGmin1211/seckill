@@ -17,7 +17,7 @@ public class MD5Util {
         return md5(str);
     }
 
-    // 第二次md5，防止万一数据库泄露，有可能通过MD5表反查（类似破解）得到用户的明文密码。
+    // 第二次md5，防止万一数据库泄露即可得到第二次的salt，但是第一次的salt并不会泄露，除非源码泄露
     public static String formPassDBPass(String formPass, String salt){
         String str = "" + salt.charAt(0) + salt.charAt(2) + formPass + salt.charAt(5) + salt.charAt(4);
         return md5(str);
