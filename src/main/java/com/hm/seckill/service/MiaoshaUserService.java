@@ -2,6 +2,7 @@ package com.hm.seckill.service;
 
 import com.hm.seckill.dao.MiaoshaUserDao;
 import com.hm.seckill.domain.MiaoshaUser;
+import com.hm.seckill.exception.GlobalException;
 import com.hm.seckill.result.CodeMsg;
 import com.hm.seckill.util.MD5Util;
 import com.hm.seckill.vo.LoginVo;
@@ -18,9 +19,9 @@ public class MiaoshaUserService {
         return miaoshaUserDao.getBuId(id);
     }
 
-    public CodeMsg login(LoginVo loginVo){
+    public boolean login(LoginVo loginVo){
         if (loginVo == null)
-            return CodeMsg.SERVER_ERROR;
+            throw new GlobalException(CodeMsg.SERVER_ERROR);
 
         String mobile = loginVo.getMobile();
         String formPass = loginVo.getPassword(); // 已经进行过一次md5的密码
@@ -28,18 +29,15 @@ public class MiaoshaUserService {
         // 判断手机号是否存在
         MiaoshaUser user = getById(Long.parseLong(mobile));
         if (user == null)
-            return CodeMsg.MOBILE_NOT_EXIST;
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
 
         // 验证密码
         String dbPass = user.getPassword();
         String saltDB = user.getSalt();
         String calcPass = MD5Util.formPassDBPass(formPass, saltDB);
-        if (calcPass.equals(dbPass))
-            return CodeMsg.PASSWORD_ERROR;
+        if (!calcPass.equals(dbPass))
+            throw new GlobalException(CodeMsg.PASSWORD_ERROR);
 
-        return CodeMsg.SUCCESS;
-
-
-
+        return true;
     }
 }

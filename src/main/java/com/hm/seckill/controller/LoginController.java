@@ -50,11 +50,15 @@ public class LoginController {
 
 
         // 登陆
-        CodeMsg codeMsg = userService.login(loginVo);
+        userService.login(loginVo);
+        return Result.success(true);
+        /* userService经过改造，出现异常就直接抛出了，无需返回condeMsg
         if (codeMsg.getCode() == 0)
             return Result.success(true);
         else
             return Result.error(codeMsg);
+        * */
+
 
     }
 }
