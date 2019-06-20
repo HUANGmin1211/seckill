@@ -28,8 +28,39 @@ public class MiaoshaUserService {
     @Autowired
     RedisService redisService;
 
+    // 对象缓存
     public MiaoshaUser getById(long id){
-        return miaoshaUserDao.getBuId(id);
+        // 取缓存
+        MiaoshaUser user = redisService.get(MiaoshaUserKey.getById, "id", MiaoshaUser.class);
+        if (user != null)
+            return user;
+
+        // 如果没有缓存，取数据库并放入缓存
+        user = miaoshaUserDao.getBuId(id);
+        if (user != null)
+            redisService.set(MiaoshaUserKey.getById, "id", user);
+        return user;
+    }
+
+    // 对象缓存要注意，在修改对象的逻辑里面，也要同时更新redis缓存
+    public boolean updatePassword(String token, long id, String formPassword){
+        // 取缓存
+        MiaoshaUser user = redisService.get(MiaoshaUserKey.getById, "id", MiaoshaUser.class);
+        if (user == null)
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+
+        // 更新数据库
+        MiaoshaUser toBeUpdate = new MiaoshaUser();
+        toBeUpdate.setId(id);
+        toBeUpdate.setPassword(MD5Util.formPassDBPass(formPassword,user.getSalt()));
+        miaoshaUserDao.update(toBeUpdate);
+
+        // 处理缓存
+        redisService.delete(MiaoshaUserKey.getById, "" + id);   // 这个直接删掉即可
+        user.setPassword(toBeUpdate.getPassword());
+        redisService.set(MiaoshaUserKey.token, token, user);    // token不能删，不然无法登陆。只能修改
+
+        return true;
     }
 
     public boolean login(HttpServletResponse response, LoginVo loginVo){

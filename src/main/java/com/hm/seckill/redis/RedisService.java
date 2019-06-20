@@ -72,6 +72,21 @@ public class RedisService {
         }
     }
 
+    // 删除
+    public boolean delete(KeyPrefix keyPrefix, String key){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+
+            // 生成真正的key
+            String realKey = keyPrefix.getPrefix() + key;
+            long ret = jedis.del(realKey);
+            return ret > 0;
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
     // 增加值，将 key 中储存的数字值增一。
     // 如果 key 不存在，那么 key 的值会先被初始化为 0 ，然后再执行 INCR 操作
     public <T> Long incr(KeyPrefix keyPrefix, String key){
