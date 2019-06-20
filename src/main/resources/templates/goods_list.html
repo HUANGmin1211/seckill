@@ -30,7 +30,9 @@
                 <td th:text="${goods.goodsPrice}"></td>  
                 <td th:text="${goods.miaoshaPrice}"></td>
                 <td th:text="${goods.stockCount}"></td>
-                <td><a th:href="'/goods/to_detail/'+${goods.id}">详情</a></td>  
+<!--                <td><a th:href="'/goods/to_detail2/'+${goods.id}">详情</a></td>-->
+                <!---页面静态化,不通过服务端跳转-->
+                <td><a th:href="'/goods_detail.htm?goodsId='+${goods.id}">详情</a></td>
      </tr>  
   </table>
 </div>
