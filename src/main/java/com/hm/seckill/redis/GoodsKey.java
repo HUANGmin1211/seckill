@@ -11,4 +11,5 @@ public class GoodsKey extends BasePrefix {
     // 页面缓存是为了防止秒杀瞬间访问量过大导致服务器压力太大，但如果缓存时间太长，数据的即时性就较弱。
     public static GoodsKey getGoodsList = new GoodsKey(60,"gl");
     public static GoodsKey getGoodsDetail = new GoodsKey(60,"gd");
+    public static GoodsKey getMiaoshaGoodsStock = new GoodsKey(0,"gs");
 }

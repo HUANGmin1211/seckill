@@ -26,7 +26,7 @@ public class OrderService {
         return redisService.get(OrderKey.getMiaoshaOrderByUidGid,"" + userId + "_" + goodsId, MiaoshaOrder.class);
     }
 
-    // 生成订单时，写入数据库的同时也写入缓存。查的时候↑直接查缓存，减少数据库的访问
+    // 生成订单时，写入数据库的同时也写入缓存。查的时候直接查缓存↑，减少数据库的访问
     @Transactional
     public OrderInfo creatOrder(MiaoshaUser user, GoodsVo goods) {
         OrderInfo orderInfo = new OrderInfo();
@@ -40,11 +40,11 @@ public class OrderService {
         orderInfo.setStatus(0);
         orderInfo.setUserId(user.getId());
 
-        long orderId = orderDao.insert(orderInfo);
+        orderDao.insert(orderInfo);
 
         MiaoshaOrder miaoshaOrder = new MiaoshaOrder();
         miaoshaOrder.setGoodsId(goods.getId());
-        miaoshaOrder.setOrderId(orderId);
+        miaoshaOrder.setOrderId(orderInfo.getId());
         miaoshaOrder.setUserId(user.getId());
 
         orderDao.insertMiaoshaOrder(miaoshaOrder);
