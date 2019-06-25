@@ -1,6 +1,7 @@
 package com.hm.seckill.controller;
 
 import com.hm.seckill.domain.User;
+import com.hm.seckill.rabbitmq.MQSender;
 import com.hm.seckill.redis.RedisService;
 import com.hm.seckill.redis.UserKey;
 import com.hm.seckill.result.CodeMsg;
@@ -20,6 +21,39 @@ public class DemoController {
     UserService userService;
     @Autowired
     RedisService redisService;
+
+    @Autowired
+    MQSender sender;
+
+    @RequestMapping("/mq/header")
+    @ResponseBody
+    public Result<String> header() {
+		sender.sendHeader("hello,imooc");
+        return Result.success("Hello，world");
+    }
+
+	@RequestMapping("/mq/fanout")
+    @ResponseBody
+    public Result<String> fanout() {
+		sender.sendFanout("hello,imooc");
+        return Result.success("Hello，world");
+    }
+
+	@RequestMapping("/mq/topic")
+    @ResponseBody
+    public Result<String> topic() {
+		sender.sendTopic("hello,imooc");
+        return Result.success("Hello，world");
+    }
+
+	@RequestMapping("/mq")
+    @ResponseBody
+    public Result<String> mq() {
+		sender.send("hello,imooc");
+        return Result.success("Hello，world");
+    }
+
+
 
     @RequestMapping("/")
     @ResponseBody
